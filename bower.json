@@ -1,0 +1,17 @@
+{
+  "name": "Search Hotels",
+  "homepage": "bower install bootstrap",
+  "authors": [
+    "Shweta Patel <patelshweta90@gmail.com>"
+  ],
+  "description": "Search hotels",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
