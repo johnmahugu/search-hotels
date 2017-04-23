@@ -3,7 +3,11 @@
 <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-    <title>Places Searchbox</title>
+    <title>Places Search</title>
+
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
     <link href="css/style.css">
     <style>
         /* Always set the map height explicitly to define the size of the div
@@ -14,6 +18,19 @@
 <body>
 <input id="pac-input" class="controls" type="text" placeholder="Search Box">
 <div id="map" style="height: 500px"></div>
+
+<div class="container search-results-container hidden">
+    <h1>Search Results</h1>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="row search-results">
+
+            </div>
+
+        </div>
+    </div>
+</div>
 <script>
     // This example adds a search box to a map, using the Google Place Autocomplete
     // feature. People can enter geographical searches. The search box will return a
@@ -113,6 +130,30 @@
             nearbyPlaces.nearbySearch(search, function(results, status) {
                 if (status === google.maps.places.PlacesServiceStatus.OK) {
                     console.log(results);
+
+                    $('.search-results-container').removeClass('hidden');
+                    $('.search-results').empty();
+
+                    results.forEach(function (hotel) {
+
+                        var html = '';
+
+                        html += '<div class="col-sm-6 col-md-4"> ' +
+                            '<div class="thumbnail"> ' +
+                            '<img src="'+ (hotel.photos ? hotel.photos[0].getUrl({
+                                maxWidth: 640
+                            }) : '')+'" alt="..."> ' +
+                            '<div class="caption"> ' +
+                            '<h3>' + hotel.name +'</h3> ' +
+                            '<p>'+ hotel.vicinity+'</p> ' +
+                            '</div> ' +
+                            '</div> ' +
+                            '</div> ';
+                        $('.search-results').append(html);
+                    })
+
+                } else {
+                    $('.search-results-container').removeClass('hidden');
                 }
             });
         }
@@ -120,6 +161,8 @@
     }
 
 </script>
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA9RcZThofRGkKhsCC01bimNzXYRBSb5W0&libraries=places&callback=initAutocomplete"
         async defer></script>
 </body>
