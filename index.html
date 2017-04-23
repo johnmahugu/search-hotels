@@ -44,7 +44,6 @@
     var nearbyPlaces;
 
 
-
     function initAutocomplete() {
         var map = new google.maps.Map(document.getElementById('map'), {
             center: {lat: -33.8688, lng: 151.2195},
@@ -60,14 +59,14 @@
         nearbyPlaces = new google.maps.places.PlacesService(map);
 
         // Bias the SearchBox results towards current map's viewport.
-        map.addListener('bounds_changed', function() {
+        map.addListener('bounds_changed', function () {
             searchBox.setBounds(map.getBounds());
         });
 
         var markers = [];
         // Listen for the event fired when the user selects a prediction and retrieve
         // more details for that place.
-        searchBox.addListener('places_changed', function() {
+        searchBox.addListener('places_changed', function () {
             places = searchBox.getPlaces();
 
             if (places.length == 0) {
@@ -75,14 +74,14 @@
             }
 
             // Clear out the old markers.
-            markers.forEach(function(marker) {
+            markers.forEach(function (marker) {
                 marker.setMap(null);
             });
             markers = [];
 
             // For each place, get the icon, name and location.
             var bounds = new google.maps.LatLngBounds();
-            places.forEach(function(place) {
+            places.forEach(function (place) {
                 if (!place.geometry) {
                     console.log("Returned place contains no geometry");
                     return;
@@ -127,10 +126,9 @@
                 types: ['lodging']
             };
 
-            nearbyPlaces.nearbySearch(search, function(results, status) {
+            nearbyPlaces.nearbySearch(search, function (results, status) {
                 if (status === google.maps.places.PlacesServiceStatus.OK) {
                     console.log(results);
-
 
 
                     $('.search-results-container').removeClass('hidden');
@@ -141,19 +139,61 @@
                         var html = '';
 
                         html += '<div class="col-xs-12"> ' +
-                            '<div class="thumbnail"> ' +
-                            '<img src="'+ (hotel.photos ? hotel.photos[0].getUrl({
+                            '<div class="thumbnail">' +
+                            '<div class="row">' +
+                            '<div class="col-xs-6">' +
+                            '<img style="width: 100%; max-height: 400px" src="' + (hotel.photos ? hotel.photos[0].getUrl({
                                 maxWidth: 640,
                                 height: 300,
                                 width: 300
-                            }) : '')+'"> ' +
+                            }) : '') + '">' +
+                            '</div> ' +
+                            '<div class="col-xs-6">' +
+                            '<div id = "'+ hotel.id + '-map" style = "height: 400px; width: 100%" > </div>' +
+                            '</div> ' +
+                            '</div>' +
                             '<div class="caption"> ' +
-                            '<h3>' + hotel.name +'</h3> ' +
-                            '<p>'+ hotel.vicinity+'</p> ' +
+                            '<h3>' + hotel.name + '</h3> ' +
+                            '<p>' + hotel.vicinity + '</p> ' +
                             '</div> ' +
                             '</div> ' +
                             '</div> ';
                         $('.search-results').append(html);
+
+                        setTimeout(function () {
+                            var hotelMap = new google.maps.Map(document.getElementById(hotel.id + '-map'), {
+                                center: {lat: -33.8688, lng: 151.2195},
+                                zoom: 13,
+                                mapTypeId: 'roadmap'
+                            });
+
+                            var boundsHotel = new google.maps.LatLngBounds();
+                            var icon = {
+                                url: hotel.icon,
+                                size: new google.maps.Size(71, 71),
+                                origin: new google.maps.Point(0, 0),
+                                anchor: new google.maps.Point(17, 34),
+                                scaledSize: new google.maps.Size(25, 25)
+                            };
+
+                            // Create a marker for each place.
+                            markers.push(new google.maps.Marker({
+                                map: hotelMap,
+                                icon: icon,
+                                title: hotel.name,
+                                position: hotel.geometry.location
+                            }));
+
+                            if (hotel.geometry.viewport) {
+                                // Only geocodes have viewport.
+                                boundsHotel.union(hotel.geometry.viewport);
+                            } else {
+                                boundsHotel.extend(hotel.geometry.location);
+                            }
+                            hotelMap.fitBounds(boundsHotel);
+
+                        })
+
                     })
 
                 } else {
