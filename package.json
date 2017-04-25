@@ -1,0 +1,22 @@
+{
+  "name": "search-hotels",
+  "version": "1.0.0",
+  "description": "search hotels",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "./node_modules/bower/bin/bower install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://sp111@github.com/sp111/search-hotels.git"
+  },
+  "author": "Shweta Patel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sp111/search-hotels/issues"
+  },
+  "homepage": "https://github.com/sp111/search-hotels#readme",
+  "dependencies": {
+    "bower": "^1.8.0"
+  }
+}
